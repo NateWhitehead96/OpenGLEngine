@@ -122,6 +122,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetLoader.cpp" />
+    <ClCompile Include="BuoyancyForceSystem.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DragForceSystem.cpp">
       <SubType>
@@ -167,6 +171,10 @@
     <ClCompile Include="Mix\System.cpp" />
     <ClCompile Include="Mix\World.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="NBodySystem.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="PairedSpringSystem.cpp">
       <SubType>
       </SubType>
@@ -187,6 +195,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetLoader.h" />
+    <ClInclude Include="BuoyancyComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="BuoyancyForceSystem.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="DirectionalLightComponent.h" />
@@ -265,6 +281,14 @@
     <ClInclude Include="Mix\World.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="MouseMoveEvent.h" />
+    <ClInclude Include="NBodyComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="NBodySystem.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="PairedSpringComponent.h">
       <SubType>
       </SubType>

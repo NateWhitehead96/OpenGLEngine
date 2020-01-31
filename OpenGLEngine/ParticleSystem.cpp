@@ -18,10 +18,10 @@ namespace Reality
 			particle.velocity += particle.acceleration * deltaTime;
 			transform.position += particle.velocity * deltaTime;
 
-			if (DEBUG_LOG_LEVEL > 0)
+			if (1 > 0)
 			{
-				getWorld().data.renderUtil->DrawSphere(transform.position, 5.0f, GL_GREEN);
-				getWorld().data.renderUtil->DrawSphere(transform.position, 5.0f, GL_GREEN);
+				getWorld().data.renderUtil->DrawSphere(transform.position, 5.0f, Color(1.0f,1.0f,1.0f,1.0f));
+				getWorld().data.renderUtil->DrawSphere(transform.position, 5.0f, Color::Red);
 			}
 		}
 	}

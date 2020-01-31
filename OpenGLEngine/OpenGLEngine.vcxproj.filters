@@ -52,6 +52,12 @@
     <Filter Include="TestCS\FireWorksDemo">
       <UniqueIdentifier>{2a1ab3ed-c9b4-469a-8efb-a6ad96814ca1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestCS\Buoyancy">
+      <UniqueIdentifier>{41c900fc-d197-4e0c-b2ba-f8f6fbef6526}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCS\Buoyancy\NBodies">
+      <UniqueIdentifier>{1be5f35d-ed80-4f0e-9b11-9356fed8fd5f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -143,6 +149,12 @@
     </ClCompile>
     <ClCompile Include="PairedSpringSystem.cpp">
       <Filter>Physics\Particles\ForceGenerators</Filter>
+    </ClCompile>
+    <ClCompile Include="BuoyancyForceSystem.cpp">
+      <Filter>TestCS\Buoyancy</Filter>
+    </ClCompile>
+    <ClCompile Include="NBodySystem.cpp">
+      <Filter>TestCS\Buoyancy\NBodies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +307,18 @@
     </ClInclude>
     <ClInclude Include="PairedSpringSystem.h">
       <Filter>Physics\Particles\ForceGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="BuoyancyComponent.h">
+      <Filter>TestCS\Buoyancy</Filter>
+    </ClInclude>
+    <ClInclude Include="BuoyancyForceSystem.h">
+      <Filter>TestCS\Buoyancy</Filter>
+    </ClInclude>
+    <ClInclude Include="NBodyComponent.h">
+      <Filter>TestCS\Buoyancy\NBodies</Filter>
+    </ClInclude>
+    <ClInclude Include="NBodySystem.h">
+      <Filter>TestCS\Buoyancy\NBodies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

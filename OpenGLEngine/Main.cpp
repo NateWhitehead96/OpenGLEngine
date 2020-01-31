@@ -13,6 +13,8 @@
 #include "DynamicDirectionalLightSystem.h"
 #include "DynamicPointLightSystem.h"
 #include "DynamicSpotLightSystem.h"
+#include "BuoyancyForceSystem.h"
+#include "NBodySystem.h"
 #include <string>
 #include <stdlib.h>     
 #include <time.h>    
@@ -25,14 +27,19 @@ void LoadModels(ECSWorld& world);
 void SetupLights(ECSWorld& world);
 void MakeABunchaObjects(ECSWorld& world);
 void MakeFireworks(ECSWorld& world);
+// Needed for Assignment 1
+int testInput = 0; // this will handle what part we are testing and only enable input for said test
+void OurInput(ECSWorld& world); // our input handling for all of the tests
+// Part 1
 void StartParticle(ECSWorld& world);
 void BungeeCord(ECSWorld& world);
-void OurInput(ECSWorld& world);
-// Needed for Assignment 1
 bool pressed = false;
 ECSEntity lastNode;
-//vector<ECSEntity>
-
+// Part 2
+void BuoyancyTest(ECSWorld& world);
+void AddBuoyantObject(ECSWorld& world);
+//Part 3
+void NBodyTest(ECSWorld& world);
 int main()
 {
 	ECSWorld world;
@@ -50,8 +57,8 @@ int main()
 	e.addComponent<FPSControlComponent>();
 
 	SetupLights(world);
-	// The starting particle for part 1
-	StartParticle(world);
+	
+	
 
 	// Create Systems
 	world.getSystemManager().addSystem<RenderingSystem>();
@@ -67,7 +74,10 @@ int main()
 	world.getSystemManager().addSystem<DynamicSpotLightSystem>();
 	world.getSystemManager().addSystem<DragForceSystem>();
 	world.getSystemManager().addSystem<PairedSpringSystem>();
+	// Systems used for assignment 1
 	world.getSystemManager().addSystem<FixedSpringSystem>();
+	world.getSystemManager().addSystem<BuoyancyForceSystem>();
+	world.getSystemManager().addSystem<NBodySystem>();
 
 	float time = glfwGetTime();
 	float stepTime = glfwGetTime();
@@ -75,6 +85,21 @@ int main()
 	float elapsedDeltaTime = 0;
 	float logicDelta = 0;
 	float debugDelta = 0;
+
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// To test the first part please uncomment StartParticle(world);                         ///////    ///////    ////     /////    /////////////////////////////////////////////////////////////
+	// To test the second part please uncomment BuoyancyTest(world);                         ///////    ///////    ////     /////    /////////////////////////////////////////////////////////////
+	// To test the third part please uncomment NBodyTest(world);                             ///////    ///////    ////     /////    /////////////////////////////////////////////////////////////
+	// The starting particle for part 1                                                      ///////               ////     /////    /////////////////////////////////////////////////////////////
+	//StartParticle(world);                                                                  ///////               ////     /////    /////////////////////////////////////////////////////////////
+	// The start for buoyancy par 2                                                          ///////    ///////    ////     /////    /////////////////////////////////////////////////////////////
+	//BuoyancyTest(world);                                                                   ///////    ///////    ////     //////////////////////////////////////////////////////////////////////
+	// The start for Nbodies part 3                                                          ///////    ///////    ////     /////    /////////////////////////////////////////////////////////////
+	//NBodyTest(world);                                                                      ///////    ///////    ////     /////    /////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 	LoadShaders(world);
 	bool shadersLoaded = false;
@@ -122,10 +147,18 @@ int main()
 		//float fixedDeltaTime = glfwGetKey(world.data.renderUtil->window->glfwWindow, GLFW_KEY_SPACE) == GLFW_PRESS ? 1 / 60.0f : 0;		
 		float fixedDeltaTime = 1 / 60.0f;
 		// Force Generator
-		world.getSystemManager().getSystem<GravityForceSystem>().Update(fixedDeltaTime);
+		if (testInput != 0)
+		{
+			world.getSystemManager().getSystem<GravityForceSystem>().Update(fixedDeltaTime);
+		}
 		world.getSystemManager().getSystem<DragForceSystem>().Update(fixedDeltaTime);
 		world.getSystemManager().getSystem<FixedSpringSystem>().Update(fixedDeltaTime);
 		world.getSystemManager().getSystem<PairedSpringSystem>().Update(fixedDeltaTime);
+		if (testInput == 2)
+		{
+			world.getSystemManager().getSystem<BuoyancyForceSystem>().Update(fixedDeltaTime);
+		}
+		world.getSystemManager().getSystem<NBodySystem>().Update(fixedDeltaTime);
 
 		// Force Accumulator
 		world.getSystemManager().getSystem<ForceAccumulatorSystem>().Update(fixedDeltaTime);
@@ -234,14 +267,17 @@ void MakeFireworks(ECSWorld & world)
 	}
 	
 }
-
+// The initial test for Bungee cord
 void StartParticle(ECSWorld& world)
 {
+	testInput = 1;
 	auto partWithDrag = world.createEntity();
 	partWithDrag.addComponent<TransformComponent>(Vector3(0, 30, -50));
 	partWithDrag.addComponent<ParticleComponent>(Vector3(0, 50, 0));
 	partWithDrag.addComponent<ForceAccumulatorComponent>();
 	partWithDrag.addComponent<GravityForceComponent>();
+
+	
 	/*//partWithDrag.addComponent<DragForceComponent>(1.0f, 0.0f);
 	//partWithDrag.addComponent<FixedSpringComponent>(1.0f, 100.0f, partWithDrag);
 
@@ -267,7 +303,7 @@ void StartParticle(ECSWorld& world)
 	lastNode = partWithDrag;
 
 }
-
+// Adding a new particle with spring to last particle created
 void BungeeCord(ECSWorld& world)
 {
 	Vector3 cameraPosition = world.data.renderUtil->camera.Position;
@@ -284,6 +320,55 @@ void BungeeCord(ECSWorld& world)
 
 	lastNode = nextJump;
 }
+// The initial test for Buoyancy
+void BuoyancyTest(ECSWorld& world)
+{
+	testInput = 2;
+	//auto water = world.createEntity();
+	//water.addComponent<BuoyancyComponent>(1.0f, 1.0f);
+	
+	auto pointInWater = world.createEntity();
+	pointInWater.addComponent<TransformComponent>(Vector3(0, 4, 0), Vector3(1,1,1), Vector3(0,0,0));
+	pointInWater.addComponent<ForceAccumulatorComponent>();
+	pointInWater.addComponent<ParticleComponent>(Vector3(0, 30, 0));
+	pointInWater.addComponent<GravityForceComponent>();
+	pointInWater.addComponent<BuoyancyComponent>(1.0f, 1.0f);
+}
+// Adding a new particle to scene
+void AddBuoyantObject(ECSWorld& world)
+{
+	Vector3 cameraPosition = world.data.renderUtil->camera.Position + 100.0f * world.data.renderUtil->camera.Front;
+
+
+	auto newObject = world.createEntity();
+	newObject.addComponent<TransformComponent>(cameraPosition);
+	newObject.addComponent<ForceAccumulatorComponent>();
+	newObject.addComponent<ParticleComponent>(Vector3(0, 30, 0));
+	newObject.addComponent<GravityForceComponent>();
+	newObject.addComponent<BuoyancyComponent>(1.0f, 1.0f);
+}
+// NBody test function
+void NBodyTest(ECSWorld& world)
+{
+	testInput = 0;
+	Vector3 cameraPosition = world.data.renderUtil->camera.Position;
+
+	for (int i = 0; i < 10; i++)
+	{
+		auto nBody = world.createEntity();
+		nBody.addComponent<ParticleComponent>(Vector3(0,0,0));
+		nBody.addComponent<TransformComponent>(cameraPosition + Vector3(RANDOM_FLOAT(0, 600),RANDOM_FLOAT(0, 600),RANDOM_FLOAT(0, 600)), Vector3(1,1,1), Vector3(0,0,0));
+		nBody.addComponent<NBodyComponent>(50);
+		nBody.addComponent<ForceAccumulatorComponent>();
+	}
+	/* The pun
+	auto nBody = world.createEntity();
+		nBody.addComponent<ParticleComponent>(Vector3(0,0,0));
+		nBody.addComponent<TransformComponent>(cameraPosition, Vector3(1,1,1), Vector3(0,0,0));
+		nBody.addComponent<NBodyComponent>(5000);
+		nBody.addComponent<ForceAccumulatorComponent>();
+	*/
+}
 
 void OurInput(ECSWorld& world)
 {
@@ -295,8 +380,30 @@ void OurInput(ECSWorld& world)
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE && pressed)
 	{
-		BungeeCord(world);
+		if (testInput == 1)
+		{
+			BungeeCord(world);
+		}
+		if (testInput == 2)
+		{
+			AddBuoyantObject(world);
+		}
 		pressed = false;
+	}
+	// Left and right arrow for density
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		if (testInput == 2)
+		{
+			BuoyancyForceSystem::liquidDensity += 10;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		if (testInput == 2 && BuoyancyForceSystem::liquidDensity > 40)
+		{
+			BuoyancyForceSystem::liquidDensity -= 10;
+		}
 	}
 }
 
